@@ -17,15 +17,11 @@ public class TODOEntry extends AbstractEntity {
     private String title;
 
     @Basic(optional = false)
-    private String description;
-
-    @Basic(optional = false)
     private boolean isCompleted = false;
 
     public TODOEntry(int id, String title, boolean isCompleted) {
         this.setId(id);
         this.title = title;
-        this.description = description;
         this.isCompleted = isCompleted;
     }
 }

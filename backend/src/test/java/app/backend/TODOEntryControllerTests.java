@@ -40,7 +40,6 @@ public class TODOEntryControllerTests {
         TODOEntry todoEntry = new TODOEntry();
         todoEntry.setId(1);
         todoEntry.setTitle("Test TODO");
-        todoEntry.setDescription("Lorem Ipsum");
         todoEntry.setCompleted(false);
         doAnswer(invocation -> {
             TODOEntry addedEntry = invocation.getArgument(0);
@@ -56,7 +55,6 @@ public class TODOEntryControllerTests {
         // then - verify the result
         response.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(todoEntry.getId())))
-                .andExpect(jsonPath("$.description", is(todoEntry.getDescription())))
                 .andExpect(jsonPath("$.completed", is(todoEntry.isCompleted())));
     }
 
@@ -91,7 +89,6 @@ public class TODOEntryControllerTests {
         // then - verify the result
         response.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(todoEntry.getId())))
-                .andExpect(jsonPath("$.description", is(todoEntry.getDescription())))
                 .andExpect(jsonPath("$.completed", is(todoEntry.isCompleted())));
     }
 
@@ -120,7 +117,6 @@ public class TODOEntryControllerTests {
         doAnswer(invocation -> {
             TODOEntry entryToUpdate = invocation.getArgument(0); // This gets the passed TODOEntry
             existingEntry.setTitle(entryToUpdate.getTitle());
-            existingEntry.setDescription(entryToUpdate.getDescription());
             existingEntry.setCompleted(entryToUpdate.isCompleted());
             return null; // No return value since updateEntry is void
         }).when(todoEntryService).updateEntry(any(TODOEntry.class));
@@ -133,7 +129,6 @@ public class TODOEntryControllerTests {
 
         // then - verify the result
         response.andExpect(status().isOk())
-                .andExpect(jsonPath("$.description", is(updatedEntry.getDescription())))
                 .andExpect(jsonPath("$.completed", is(updatedEntry.isCompleted())));
     }
 
@@ -162,7 +157,6 @@ public class TODOEntryControllerTests {
         TODOEntry todoEntry = new TODOEntry();
         todoEntry.setId(todoEntryId);
         todoEntry.setTitle("Test TODO");
-        todoEntry.setDescription("Lorem Ipsum");
         todoEntry.setCompleted(false);
         given(todoEntryService.getEntryById(todoEntryId)).willReturn(todoEntry);
         willDoNothing().given(todoEntryService).removeEntry(any(TODOEntry.class));

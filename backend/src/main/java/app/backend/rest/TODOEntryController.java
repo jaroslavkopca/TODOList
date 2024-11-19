@@ -63,7 +63,6 @@ public class TODOEntryController {
 
         // Update fields only if they are provided in the request body
         Optional.ofNullable(todoEntry.getTitle()).ifPresent(existingEntry::setTitle);
-        Optional.ofNullable(todoEntry.getDescription()).ifPresent(existingEntry::setDescription);
         existingEntry.setCompleted(todoEntry.isCompleted());
 
 
