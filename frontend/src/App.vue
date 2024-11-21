@@ -53,64 +53,21 @@ export default {
   methods: {
     // Add todo and sync with backend
     async addTodo(newTodo) {
-      try {
-        const response = await fetch('http://localhost:8080/api/createTODOEntry', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newTodo),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          this.todos.push(data); // Add to local todos array
-          this.filterTodos(); // Refetch filtered todos
-        } else {
-          console.error('Failed to add todo:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error adding todo:', error);
-      }
+          this.todos.push(newTodo);
+          this.filterTodos();
     },
 
     // Delete todo and sync with backend
     async removeTodo(id) {
-      console.log("THIRD REMOVE");
-      try {
-        const response = await fetch(`http://localhost:8080/api/deleteTODOEntry/${id}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          this.todos = this.todos.filter(todo => todo.id !== id); // Remove from local todos array
-          this.filterTodos(); // Refetch filtered todos
-        } else {
-          console.error('Failed to delete todo:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error removing todo:', error);
-      }
+      this.todos = this.todos.filter((todo) => todo.id !== id);
+      this.filterTodos();
     },
 
     async toggleTodo(todo){
-      console.log("THIRD TOGGLE")
-      try {
-        const response = await fetch('http://localhost:8080/api/updateTODOEntry', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(todo),
-        });
-
-        if (response.ok) {
-          this.filterTodos();
-        } else {
-          console.error('Failed to update todo:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error updating todo:', error);
+      const index = this.todos.findIndex((t) => t.id === todo.id);
+      if (index !== -1) {
+        this.todos.splice(index, 1, todo); // Update the specific todo
+        this.filterTodos(); // Recalculate filtered todos
       }
     },
 
@@ -143,9 +100,18 @@ export default {
       }
     },
   },
-  // Fetch todos initially when the app is loaded
-  created() {
-    this.filterTodos();
+  async created() {
+    try {
+      const response = await fetch('http://localhost:8080/api/getAllTODOEntries');
+      if (response.ok) {
+        this.todos = await response.json(); // Initialize the todos array
+        this.filterTodos(); // Initialize filtered todos
+      } else {
+        console.error('Failed to fetch todos:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+    }
   },
 };
 </script>

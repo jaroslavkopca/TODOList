@@ -24,11 +24,9 @@ export default {
   },
   methods: {
     async removeTodo(id) {
-      console.log("SECOND REMOVE");
       this.$emit('removeTodo', id); // Emit remove event to parent
     },
     async toggleTodo(todo) {
-      console.log("SECOND TOGGLE")
       this.$emit('toggleTodo', todo);
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <header>
-    <h1>Vue TODO List</h1>
+    <h1>TODO List</h1>
   </header>
 </template>
 

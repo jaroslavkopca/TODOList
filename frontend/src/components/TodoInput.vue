@@ -25,7 +25,26 @@ export default {
   methods: {
     async handleAddTodo() {
       if (this.newTodo.title.trim() !== '') {
-        this.$emit('addTodo', this.newTodo); // Emit event to parent for adding
+        try {
+          const response = await fetch('http://localhost:8080/api/createTODOEntry', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.newTodo),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            this.$emit('addTodo', data);
+          } else {
+            console.error('Failed to add todo:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error adding todo:', error);
+        }
+
+
         this.newTodo.title = ''; // Clear input after adding
       }
     }

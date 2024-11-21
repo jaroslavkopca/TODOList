@@ -14,12 +14,38 @@ export default {
   },
   methods: {
     async removeTodo() {
-      console.log("FIRST REMOVE");
-      this.$emit('removeTodo', this.todo.id);
+      try {
+        const response = await fetch(`http://localhost:8080/api/deleteTODOEntry/${this.todo.id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          this.$emit('removeTodo', this.todo.id);
+        } else {
+          console.error('Failed to delete todo:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error removing todo:', error);
+      }
     },
     async toggleTodo() {
-      console.log("FIRST TOGGLE");
-      this.$emit('toggleTodo', this.todo);
+      try {
+        const response = await fetch('http://localhost:8080/api/updateTODOEntry', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(this.todo),
+        });
+        if (response.ok) {
+          const updatedTodo = await response.json();
+          this.$emit('toggleTodo', updatedTodo);
+        } else {
+          console.error('Failed to update todo:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error updating todo:', error);
+      }
     }
   }
 };
