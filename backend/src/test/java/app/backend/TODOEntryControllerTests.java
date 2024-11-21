@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -38,11 +39,12 @@ public class TODOEntryControllerTests {
     public void givenTODOEntry_whenCreateTODOEntry_thenReturnSavedTODOEntry() throws Exception {
         // given - precondition or setup
         TODOEntry todoEntry = new TODOEntry();
+        TODOEntry addedEntry = new TODOEntry();
         todoEntry.setId(1);
         todoEntry.setTitle("Test TODO");
         todoEntry.setCompleted(false);
         doAnswer(invocation -> {
-            TODOEntry addedEntry = invocation.getArgument(0);
+            assertEquals(todoEntry,invocation.getArgument(0));
             return null;
         }).when(todoEntryService).addEntry(todoEntry);
 
@@ -56,6 +58,7 @@ public class TODOEntryControllerTests {
         response.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(todoEntry.getId())))
                 .andExpect(jsonPath("$.completed", is(todoEntry.isCompleted())));
+
     }
 
     // Test for getting all TODOEntries
@@ -114,12 +117,6 @@ public class TODOEntryControllerTests {
         TODOEntry existingEntry = new TODOEntry(todoEntryId, "Old TODO", false);
         TODOEntry updatedEntry = new TODOEntry(todoEntryId, "Updated TODO", true);
         given(todoEntryService.getEntryById(todoEntryId)).willReturn(existingEntry);
-        doAnswer(invocation -> {
-            TODOEntry entryToUpdate = invocation.getArgument(0); // This gets the passed TODOEntry
-            existingEntry.setTitle(entryToUpdate.getTitle());
-            existingEntry.setCompleted(entryToUpdate.isCompleted());
-            return null; // No return value since updateEntry is void
-        }).when(todoEntryService).updateEntry(any(TODOEntry.class));
 
 
         // when - action or behavior we are going to test
@@ -129,7 +126,9 @@ public class TODOEntryControllerTests {
 
         // then - verify the result
         response.andExpect(status().isOk())
-                .andExpect(jsonPath("$.completed", is(updatedEntry.isCompleted())));
+                .andExpect(jsonPath("$.completed", is(updatedEntry.isCompleted())))
+                .andExpect(jsonPath("$.title", is(updatedEntry.getTitle())))
+                .andExpect(jsonPath("$.id", is(updatedEntry.getId())));
     }
 
     // Test for updating a TODOEntry (not found case)
