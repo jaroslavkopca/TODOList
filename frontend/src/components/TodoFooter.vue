@@ -9,9 +9,15 @@
 
     <!-- Filter buttons to change the view -->
     <div class="filters">
-      <button @click="changeFilter('all')">All</button> <!-- Show all tasks -->
-      <button @click="changeFilter('completed')">Completed</button> <!-- Show completed tasks -->
-      <button @click="changeFilter('notcompleted')">Not Completed</button> <!-- Show tasks not completed -->
+      <button
+          @click="changeFilter('all')"
+          :class="{ 'active': filter === 'all' }">All</button> <!-- Show all tasks -->
+      <button
+          @click="changeFilter('completed')"
+          :class="{ 'active': filter === 'completed' }">Completed</button> <!-- Show completed tasks -->
+      <button
+          @click="changeFilter('notcompleted')"
+          :class="{ 'active': filter === 'notcompleted' }">Not Completed</button> <!-- Show tasks not completed -->
     </div>
   </div>
 </template>
@@ -52,5 +58,11 @@ export default {
 /* Hover effect for buttons */
 .filters button:hover {
   color: blue;
+}
+
+/* Highlight the active filter button */
+.filters button.active {
+  font-weight: bold; /* Make the active filter bold */
+  color: blue; /* Change the color to blue for the active filter */
 }
 </style>

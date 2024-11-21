@@ -10,6 +10,7 @@
         @dblclick="enableEditing"
     >
       {{ todo.title }}
+      <!--    against XSS      -->
     </span>
     <input
         v-else
