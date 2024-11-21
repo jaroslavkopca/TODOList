@@ -42,16 +42,6 @@ public class TODOEntryController {
         return new ResponseEntity<>(todoEntry, HttpStatus.CREATED);
     }
 
-    // Endpoint to update an existing TODOEntry
-//    @PutMapping("/updateTODOEntry")
-//    public ResponseEntity<TODOEntry> updateTODOEntry(@RequestBody TODOEntry todoEntry) {
-//        TODOEntry existingEntry = todoEntryService.getEntryById(todoEntry.getId());
-//        if (existingEntry == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        todoEntryService.updateEntry(todoEntry);
-//        return new ResponseEntity<>(todoEntry, HttpStatus.OK);
-//    }
 
     @PutMapping("/updateTODOEntry")
     public ResponseEntity<TODOEntry> updateTODOEntry(@RequestBody TODOEntry todoEntry) {
