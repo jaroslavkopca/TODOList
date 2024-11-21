@@ -24,5 +24,16 @@ public class TODOEntryDao extends BaseDao<TODOEntry> {
         }
     }
 
+    @Override
+    public List<TODOEntry> findAll() {
+        try {
+            return em.createQuery("SELECT t FROM TODOEntry t ORDER BY t.createdAt ASC", TODOEntry.class)
+                    .getResultList();
+        } catch (RuntimeException e) {
+            throw new PersistenceException(e);
+        }
+    }
+
+
 }
 
