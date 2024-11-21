@@ -1,7 +1,12 @@
 <template>
   <div class="todo-app">
+    <!-- Header component for app title or navigation -->
     <Header />
+
+    <!-- Input component for adding new TodoEntry -->
     <TodoInput @addTodo="addTodo" />
+
+    <!-- List component for displaying filtered TodoEntries -->
     <TodoList
         :todos="filteredTodos"
         :filter="filter"
@@ -9,6 +14,8 @@
         @removeTodo="removeTodo"
         @toggleTodo="toggleTodo"
     />
+
+    <!-- Footer component for filtering and stats -->
     <TodoFooter
         :todos="todos"
         :filter="filter"
@@ -16,7 +23,6 @@
         :completed="completedCount"
         @changeFilter="changeFilter"
     />
-
   </div>
 </template>
 
@@ -35,88 +41,92 @@ export default {
   },
   data() {
     return {
-      todos: [],  // Local state for all todos
-      filteredTodos: [],  // Local state for filtered todos
-      filter: 'all', // Default filter value
+      todos: [],  // All TodoEntries from backend
+      filteredTodos: [],  // TodoEntries filtered by current filter
+      filter: 'all', // Current filter ('all', 'completed', or 'notcompleted')
     };
   },
   computed: {
-    // Count of completed todos
+    // Count of completed TodoEntries
     completedCount() {
-      return this.todos.filter(todo => todo.completed).length; // Note: Use 'completed' from backend
+      return this.todos.filter(entry => entry.completed).length;
     },
-    // Count of remaining todos
+    // Count of remaining (not completed) TodoEntries
     remainingCount() {
-      return this.todos.filter(todo => !todo.completed).length;
+      return this.todos.filter(entry => !entry.completed).length;
     }
   },
   methods: {
-    // Add todo and sync with backend
+    // Add a new TodoEntry and refresh the filtered list
     async addTodo(newTodo) {
-          this.todos.push(newTodo);
-          this.filterTodos();
+      this.todos.push(newTodo); // Add new TodoEntry to local list
+      this.filterTodos(); // Recalculate filtered TodoEntries
     },
 
-    // Delete todo and sync with backend
+    // Remove a TodoEntry by its ID and refresh the filtered list
     async removeTodo(id) {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-      this.filterTodos();
+      this.todos = this.todos.filter((entry) => entry.id !== id); // Remove from local list
+      this.filterTodos(); // Recalculate filtered TodoEntries
     },
 
-    async toggleTodo(todo){
-      const index = this.todos.findIndex((t) => t.id === todo.id);
+    // Toggle completion status of a TodoEntry and refresh the filtered list
+    async toggleTodo(todo) {
+      const index = this.todos.findIndex((entry) => entry.id === todo.id);
       if (index !== -1) {
-        this.todos.splice(index, 1, todo); // Update the specific todo
-        this.filterTodos(); // Recalculate filtered todos
+        this.todos.splice(index, 1, todo); // Replace with updated TodoEntry
+        this.filterTodos(); // Recalculate filtered TodoEntries
       }
     },
 
-    // Change filter and refetch filtered todos
+    // Change the filter and refresh the filtered list
     async changeFilter(newFilter) {
-      this.filter = newFilter;
-      this.filterTodos(); // Refetch based on the new filter
+      this.filter = newFilter; // Update filter value
+      this.filterTodos(); // Fetch and update filtered TodoEntries
     },
 
-    // Fetch filtered todos from backend
+    // Fetch TodoEntries from the backend based on the current filter
     async filterTodos() {
-      let url = 'http://localhost:8080/api/getAllTODOEntries';
+      let url = 'http://localhost:8080/api/getAllTODOEntries'; // Default: fetch all TodoEntries
 
+      // Adjust URL based on the filter
       if (this.filter === 'completed') {
-        url = 'http://localhost:8080/api/status/true';
+        url = 'http://localhost:8080/api/status/true'; // Fetch completed TodoEntries
       } else if (this.filter === 'notcompleted') {
-        url = 'http://localhost:8080/api/status/false';
+        url = 'http://localhost:8080/api/status/false'; // Fetch not completed TodoEntries
       }
 
       try {
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
-          this.filteredTodos = data; // Set filteredTodos based on the response
+          this.filteredTodos = data; // Update filtered TodoEntries
         } else {
-          console.error('Failed to fetch todos:', response.statusText);
+          console.error('Failed to fetch TodoEntries:', response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching todos:', error);
+        console.error('Error fetching TodoEntries:', error);
       }
     },
   },
   async created() {
+    // Fetch all TodoEntries when the component is created
     try {
       const response = await fetch('http://localhost:8080/api/getAllTODOEntries');
       if (response.ok) {
-        this.todos = await response.json(); // Initialize the todos array
-        this.filterTodos(); // Initialize filtered todos
+        this.todos = await response.json(); // Initialize local TodoEntries list
+        this.filterTodos(); // Initialize filtered TodoEntries
       } else {
-        console.error('Failed to fetch todos:', response.statusText);
+        console.error('Failed to fetch TodoEntries:', response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching todos:', error);
+      console.error('Error fetching TodoEntries:', error);
     }
   },
 };
 </script>
 
 <style scoped>
+/* Center and style the TodoApp */
 .todo-app {
   max-width: 500px;
   margin: 0 auto;

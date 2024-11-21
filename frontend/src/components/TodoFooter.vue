@@ -1,14 +1,17 @@
 <template>
   <div class="todo-footer">
+    <!-- Display task counters -->
     <div class="counter">
-      <span>{{ remaining }} left</span>
+      <span>{{ remaining }} left</span> <!-- Remaining tasks -->
       <span> | </span>
-      <span>{{ completed }} completed</span>
+      <span>{{ completed }} completed</span> <!-- Completed tasks -->
     </div>
+
+    <!-- Filter buttons to change the view -->
     <div class="filters">
-      <button @click="changeFilter('all')">All</button>
-      <button @click="changeFilter('completed')">Completed</button>
-      <button @click="changeFilter('notcompleted')">Not Completed</button>
+      <button @click="changeFilter('all')">All</button> <!-- Show all tasks -->
+      <button @click="changeFilter('completed')">Completed</button> <!-- Show completed tasks -->
+      <button @click="changeFilter('notcompleted')">Not Completed</button> <!-- Show tasks not completed -->
     </div>
   </div>
 </template>
@@ -17,33 +20,36 @@
 export default {
   name: 'TodoFooter',
   props: {
-    remaining: Number, // Count of remaining tasks
-    completed: Number, // Count of completed tasks
-    filter: String,    // Current filter
+    remaining: Number, // Number of remaining tasks (passed from parent)
+    completed: Number, // Number of completed tasks (passed from parent)
+    filter: String,    // Current filter applied (passed from parent)
   },
   methods: {
+    // Emits a new filter selection to the parent component.
     async changeFilter(newFilter) {
-      this.$emit('changeFilter', newFilter);
+      this.$emit('changeFilter', newFilter); // Notify parent about the filter change
     }
   }
 };
-
 </script>
 
 <style scoped>
+/* Container for the footer section */
 .todo-footer {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
 }
 
+/* Styling for filter buttons */
 .filters button {
   margin: 0 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
+  background: none; /* Transparent background */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor on hover */
 }
 
+/* Hover effect for buttons */
 .filters button:hover {
   color: blue;
 }
